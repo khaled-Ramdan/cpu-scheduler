@@ -1,0 +1,10 @@
+There is no real installation of this package,
+because you may use this to create your own programs.
+
+There  is a file called 'monitor.c', use 'make monitor'<<<<<<<<<<<<<<<<<IMPORTANT
+
+Use 'make ' to compile all files, excepted 'monitor.c',
+then you can include the Librarys and headers to your 
+own programs.
+
+Finally: have fun with it.
