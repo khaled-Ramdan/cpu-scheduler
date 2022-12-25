@@ -20,7 +20,7 @@ struct Process {
 			insType[i] = 1;
 		random_shuffle(insType.begin(), insType.end());
 	}
-	bool operator< (const Process& p) const{
+	bool operator< (const Process& p) const {
 		return p.readyTime < this->readyTime;
 	}
 };
@@ -62,7 +62,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 		scheduler.push(i);
 	}
 	ll curTime = 0;
-	
+
 	while (scheduler.size())
 	{
 		Process curProcess = scheduler.top();
@@ -71,17 +71,19 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 			print(curTime, curProcess.readyTime - 1, -1);
 			curTime = curProcess.readyTime;
 		}
-		ll st = curTime, en = 0;
+		ll st = curTime, en = 0, ok = 0;
 		for (int i = 0; i < timeSlice and curProcess.insIdx < curProcess.numberOfInstructions; i++, curTime++, curProcess.insIdx++) {
 			if (procData[curProcess.pId].firstTun == -1)procData[curProcess.pId].firstTun = curTime;
 			if (curProcess.insType[curProcess.insIdx] == 0) //cpu instruction
 				continue;
 			//io instruction
 			en = curTime;
-			print(st, en, curProcess.pId);
+
 			curProcess.readyTime = curTime + ioTime;
 			curProcess.insIdx++;
-			if(curProcess.insIdx!=curProcess.numberOfInstructions)
+			ok = 1;
+			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
+			if (curProcess.insIdx != curProcess.numberOfInstructions)
 				scheduler.push(curProcess);
 			curTime++;
 			break;
@@ -89,7 +91,8 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 		en = curTime;
 		if (curProcess.insIdx == curProcess.numberOfInstructions)
 			procData[curProcess.pId].completion = curProcess.readyTime;
-		print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
+		if(!ok)
+			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
 	}
 	metaDataDisplay(procData, v.size());
 }
