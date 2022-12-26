@@ -147,8 +147,6 @@ class MLFQ
 
             if (usedLevels.empty())
             {
-            cout << cur_time << ' ' << blocked.size() << '\n';
-                // cout << cur_time << ' ' << process[2].readyTime << '\n';
                 cur_time++;
                 continue;
             }
@@ -160,8 +158,6 @@ class MLFQ
             while (process[cur_process].insIdx < process[cur_process].numberOfInstructions)
             {
 
-                // cout << cur_process << ' ' << cur_time << ' ' << process[cur_process].insIdx << ' ' << process[cur_process].consumed << ' ' << timeSliceOfQueue[highestUsedLevel] << '\n';
-                 cout << highestUsedLevel << ' ' << cur_process << ' ' << cur_time << ' ' << blocked.size() << '\n';
                 if (isCompleteTimeSlice(process[cur_process].consumed, timeSliceOfQueue[highestUsedLevel]))
                 {
                     process[cur_process].consumed = 0;
@@ -192,7 +188,6 @@ class MLFQ
                 usedLevels.erase(usedLevels.begin());
             }
 
-            // cout << highestUsedLevel << '\n';
             if (flag == 1)
             {
                 cout << process[cur_process].PID << " is Blocked at Current Time = " << cur_time << endl; 
@@ -217,14 +212,11 @@ class MLFQ
     void block_process(int level, int id, int cur_time)
     {
         process[id].readyTime = cur_time + io_waiting_time;
-        // cout << id << ' ' << level << ' ' << process[id].readyTime << '\n'; 
         blocked.push({process[id].readyTime, {level, id}});
     }
 
     void fromReadyToRunning()
     {
-        // updateCurTime();
-
         while (blocked.empty() == 0 && blocked.top().first <= cur_time)
         {
             pair<int, int>ready_process = blocked.top().second;
@@ -244,27 +236,6 @@ class MLFQ
             usedLevels.insert(topLevel);
         }
     }
-
-    // void updateCurTime()
-    // {
-    //     if (blocked.empty() == 0 && pointer < number_of_processes)
-    //     {
-    //         cur_time = max(cur_time, min(blocked.top().first, process[pointer].readyTime));
-    //     }
-    //     else if (blocked.empty() == 0)
-    //     {
-    //         cur_time = max(cur_time, blocked.top().first);
-    //     }
-    //     else 
-    //     {
-    //         cur_time = max(cur_time, process[pointer].readyTime);
-    //     }
-    //     if (cur_time >= lastBoost + priority_boost)
-    //     {
-    //         boost();
-    //         updateCurTime();
-    //     }
-    // }
 
     void boost()
     {
