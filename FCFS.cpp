@@ -3,7 +3,7 @@ using namespace std;
 typedef long long ll;
 
 struct Process {
-	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx,turnaround_time,responce_time;
+	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx,turnaround_time,responce_time , wait_time;
 	vector<bool>insType;//0=>cpu - 1=> io
 	Process() { readyTime = 0; pId = 0; numberOfInstructions = 0; IOPercent = 0; insIdx = 0; };
 	Process(ll id, ll instructionCount, ll iopercent, ll arrivalTime) {
@@ -121,17 +121,17 @@ void FCFS_Scheduler(Process *ptr, int n , int m ,int k){
 }
 
 
-void printresult(Process *ptr, int n,int waiting_time ,int ins_time)
+void printresult(Process *ptr, int n,int ins_time)
 {   
     CPU_time = n*ins_time;
-    ptr[0].waiting_time=0;
+    ptr[0].wait_time=0;
     cout << ptr[0].pId ;
     cout << "is working from " << 0 << "to"<< processes[0].CPU_time;
     for(int i=1;i<n;i++)
     {
         cout << ptr[i].pId;
-        ptr[i].waiting_time=ptr[i-1].CPU_time + ptr[i-1].waiting_time;
-        cout << "is working from " <<ptr[i].waiting_time<< "to"<< ptr[i].waiting_time+ptr[i].CPU_time;
+        ptr[i].wait_time=ptr[i-1].CPU_time + ptr[i-1].wait_time;
+        cout << "is working from " <<ptr[i].wait_time<< "to"<< ptr[i].wait_time+ptr[i].CPU_time;
         
     }
 
