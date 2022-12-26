@@ -123,7 +123,7 @@ void FCFS_Scheduler(Process *ptr, int n , int m ,int k){
 
 void printresult(Process *ptr, int n,int ins_time)
 {   
-    CPU_time = n*ins_time;
+    CPU_time = ptr[0].numberOfInstructions*ins_time;
     ptr[0].wait_time=0;
     cout << ptr[0].pId ;
     cout << "is working from " << 0 << "to"<< ptr[0].CPU_time;
