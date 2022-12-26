@@ -1,75 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <cstdlib>
-#include <algorithm>
-#include <vector>
-#include <queue>
-#include <set>
-
-using namespace std;
-
+#include"common.h"
 // vector to store all processes
 
 int number_of_processes;
 int io_waiting_time;
 int instruction_execution_time;
-
-struct Process 
-{
-
-    // info for each Process
-	string PID;
-    int numberOfInstructions, IOPercent, readyTime, insIdx, consumed;
-    // instruction Type vector -> to know the type for the instruction where 0 => cpu and 1 => io
-    vector<bool>insType; 
-
-    // Initalize info 
-	Process() 
-    { 
-        readyTime = 0;
-        PID = ""; 
-        numberOfInstructions = 0; 
-        IOPercent = 0; 
-        insIdx = 0; 
-        consumed = 0;
-    };
-
-    // constructor of this struct
-	Process(string pid, int instructionCount, int iopercent, int arrivalTime)
-    {
-		PID = pid;
-		numberOfInstructions = instructionCount;
-		IOPercent = iopercent;
-		readyTime = arrivalTime;
-        insIdx = 0;
-        consumed = 0;
-        // resize the instruction_type vector (instruction_type.size() = number_of_instructions) and assign each index by 0
-		insType.assign(numberOfInstructions, 0); 
-		// call randomizeIO function to determine which instruction is cpu or io
-        randomizeIO();
-	}
-
-    // determine each instruction is cpu or io
-	void randomizeIO() 
-    {
-        // get the number of io intructions depend on io percentage
-        int ioCount = IOPercent * numberOfInstructions / 100;
-		// make the first ioCount in the instructions is io instruction
-        for (int i = 0; i < ioCount; i++)
-		{
-            insType[i] = 1;    // means this instruction is io instruction
-        }
-        // shuffle all instructions randomly
-		random_shuffle(insType.begin(), insType.end());
-	}
-
-    // sort the processes according to its ready_time
-	bool operator< (const Process& p) const 
-    {
-		return p.readyTime < this->readyTime;
-	}
-};
-
+vector<Process>process;
 struct cmp
 {
     bool operator() (pair<int, pair<int, int>>a, pair<int, pair<int, int>>b)
@@ -79,9 +14,6 @@ struct cmp
         return a.second.first < b.second.first;
     }
 };
-
-vector<Process>process;
-
 class MLFQ
 {
     public: 
@@ -147,6 +79,8 @@ class MLFQ
 
             if (usedLevels.empty())
             {
+            cout << cur_time << ' ' << blocked.size() << '\n';
+                // cout << cur_time << ' ' << process[2].readyTime << '\n';
                 cur_time++;
                 continue;
             }
@@ -158,6 +92,8 @@ class MLFQ
             while (process[cur_process].insIdx < process[cur_process].numberOfInstructions)
             {
 
+                // cout << cur_process << ' ' << cur_time << ' ' << process[cur_process].insIdx << ' ' << process[cur_process].consumed << ' ' << timeSliceOfQueue[highestUsedLevel] << '\n';
+                 cout << highestUsedLevel << ' ' << cur_process << ' ' << cur_time << ' ' << blocked.size() << '\n';
                 if (isCompleteTimeSlice(process[cur_process].consumed, timeSliceOfQueue[highestUsedLevel]))
                 {
                     process[cur_process].consumed = 0;
@@ -188,17 +124,18 @@ class MLFQ
                 usedLevels.erase(usedLevels.begin());
             }
 
+            // cout << highestUsedLevel << '\n';
             if (flag == 1)
             {
-                cout << process[cur_process].PID << " is Blocked at Current Time = " << cur_time << endl; 
+                cout << process[cur_process].pId << " is Blocked at Current Time = " << cur_time << endl; 
             }
             else if (process[cur_process].insIdx == process[cur_process].numberOfInstructions)
             {
-                cout << process[cur_process].PID << " is Finished at Current Time = " << cur_time << endl; 
+                cout << process[cur_process].pId << " is Finished at Current Time = " << cur_time << endl; 
             }
             else 
             {
-                cout << process[cur_process].PID << " uses up the Time Slice Current Time = " << cur_time << endl; 
+                cout << process[cur_process].pId << " uses up the Time Slice Current Time = " << cur_time << endl; 
             }
         }
 
@@ -212,11 +149,14 @@ class MLFQ
     void block_process(int level, int id, int cur_time)
     {
         process[id].readyTime = cur_time + io_waiting_time;
+        // cout << id << ' ' << level << ' ' << process[id].readyTime << '\n'; 
         blocked.push({process[id].readyTime, {level, id}});
     }
 
     void fromReadyToRunning()
     {
+        // updateCurTime();
+
         while (blocked.empty() == 0 && blocked.top().first <= cur_time)
         {
             pair<int, int>ready_process = blocked.top().second;
@@ -236,6 +176,27 @@ class MLFQ
             usedLevels.insert(topLevel);
         }
     }
+
+    // void updateCurTime()
+    // {
+    //     if (blocked.empty() == 0 && pointer < number_of_processes)
+    //     {
+    //         cur_time = max(cur_time, min(blocked.top().first, process[pointer].readyTime));
+    //     }
+    //     else if (blocked.empty() == 0)
+    //     {
+    //         cur_time = max(cur_time, blocked.top().first);
+    //     }
+    //     else 
+    //     {
+    //         cur_time = max(cur_time, process[pointer].readyTime);
+    //     }
+    //     if (cur_time >= lastBoost + priority_boost)
+    //     {
+    //         boost();
+    //         updateCurTime();
+    //     }
+    // }
 
     void boost()
     {
@@ -257,69 +218,24 @@ class MLFQ
 
 };
 
-int main()
+void MLFQS(const vector<Process>& v,int n,int m,int k)
 {
-    fstream dataSet;
-    
-    // open the 'Data_set.txt' File 
-    dataSet.open("Data_Set.txt", ios::in);   
-
-    // if file Opening failed    
-    if(!dataSet)
-    {
-        cout << "File Opening failed"; 
-        return 0;
-    } 
-
-    // if reaches here the file is opened
-
-    // get the number of processes
-    dataSet >> number_of_processes;
-
-    // get the IO waiting time
-    dataSet >> io_waiting_time;
-
-    // get the instruction execution time
-    dataSet >> instruction_execution_time;
-    
-
-    // loop to get info for each process
-    for (int i = 0; i < number_of_processes; i++)
-    {
-        string PID;
-        int number_of_instructions, io_percent, arrival_time;
-
-        // get the pid for this instruction
-        dataSet >> PID;
-
-        // get the instruction count for this process
-        dataSet >> number_of_instructions;
-
-        // get the IO percentage for this process
-        dataSet >> io_percent;
-
-        // get the arrival time for this process
-        dataSet >> arrival_time;
- 
-        // push this process in process vector
-        process.push_back(Process(PID, number_of_instructions, io_percent, arrival_time));
-    }
-
-    // close the data set file
-    dataSet.close();
-
+    process=v;
+    number_of_processes=n;
+    io_waiting_time=m;
+    instruction_execution_time=k;
     // if it reaches here data set is uploaded
 
-    cout << process.size() << '\n';
-    for (int i = 0; i < number_of_processes; i++)
-    {
-        cout << "process num " << i << "   " << process[i].readyTime << ":\t";
-        for (int j = 0; j < process[i].numberOfInstructions; j++)
-        {
-            cout << process[i].insType[j] << ' ';
-        }
-        cout << "\n\n";
-    }
+    // cout << process.size() << '\n';
+    // for (int i = 0; i < number_of_processes; i++)
+    // {
+    //     cout << "process num " << i << "   " << process[i].readyTime << ":\t";
+    //     for (int j = 0; j < process[i].numberOfInstructions; j++)
+    //     {
+    //         cout << process[i].insType[j] << ' ';
+    //     }
+    //     cout << "\n\n";
+    // }
 
     MLFQ mlfq;
     mlfq.solve();
