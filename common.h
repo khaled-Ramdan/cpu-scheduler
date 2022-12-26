@@ -6,7 +6,7 @@ typedef long long ll;
 #ifndef _common_H
 #define _common_H
 struct Process {
-	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx;
+	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx,executionTime;
 	vector<bool>insType;//0=>cpu - 1=> io
 	Process() { readyTime = 0; pId = 0; numberOfInstructions = 0; IOPercent = 0; insIdx = 0; };
 	Process(ll id, ll instructionCount, ll iopercent, ll arrivalTime) {
@@ -15,6 +15,7 @@ struct Process {
 		IOPercent = iopercent;
 		readyTime = arrivalTime;
 		insIdx = 0;
+		executionTime = 0;
 		insType.assign(numberOfInstructions, 0);
 		randomizeIO();
 	}
@@ -22,6 +23,7 @@ struct Process {
 		ll ioCount = IOPercent * numberOfInstructions / 100;
 		for (int i = 0; i < ioCount; i++)
 			insType[i] = 1;
+		executionTime = numberOfInstructions - ioCount;
 		random_shuffle(insType.begin(), insType.end());
 	}
 	bool operator< (const Process& p) const {
