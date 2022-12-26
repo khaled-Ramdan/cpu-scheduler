@@ -1,6 +1,7 @@
 #include"common.h"
 #include"STCF.h"
 #include"FCFS.h"
+#include <stdlib.h>
 void menu()
 {
 		cout<<"\nchoose one:\n";
@@ -13,6 +14,7 @@ void menu()
 }
 int main() {
 	srand(time(0));
+	system("CLS");
 	fstream dataSet;
         int number_of_processes,io_waiting_time ,instruction_execution_time;
     // open the 'Data_set.txt' File 
@@ -100,7 +102,7 @@ int main() {
 			RoundRobin(v, tc, instruction_execution_time, io_waiting_time);
 			break;
 		case '5':
-			// MLFQ(v,k,m);
+			MLFQS(v,v.size(), io_waiting_time, instruction_execution_time);
 			break;
 		
 		default:
