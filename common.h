@@ -6,9 +6,9 @@ typedef long long ll;
 #ifndef _common_H
 #define _common_H
 struct Process {
-	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx,executionTime;
+	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx,executionTime,consumed;
 	vector<bool>insType;//0=>cpu - 1=> io
-	Process() { readyTime = 0; pId = 0; numberOfInstructions = 0; IOPercent = 0; insIdx = 0; };
+	Process() { readyTime = 0; pId = 0; numberOfInstructions = 0; IOPercent = 0; insIdx = 0; consumed=0;};
 	Process(ll id, ll instructionCount, ll iopercent, ll arrivalTime) {
 		pId = id;
 		numberOfInstructions = instructionCount;
@@ -16,6 +16,7 @@ struct Process {
 		readyTime = arrivalTime;
 		insIdx = 0;
 		executionTime = 0;
+		consumed=0;
 		insType.assign(numberOfInstructions, 0);
 		randomizeIO();
 	}
@@ -64,4 +65,5 @@ struct processMetaData
 };
 void metaDataDisplay(map<ll, processMetaData>procData, ll numberOfProcesses);
 void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime);
+void MLFQS(const vector<Process>& v,int n,int m,int k);
 #endif
