@@ -56,7 +56,6 @@ int main() {
 		
         // push this process in process vector
 		v[i]=Process(PID,number_of_instructions,io_percent,arrival_time);
-		v[i].executionTime*=io_waiting_time;
     }
 
     // close the data set file
