@@ -126,7 +126,7 @@ void printresult(Process *ptr, int n,int ins_time)
     CPU_time = n*ins_time;
     ptr[0].wait_time=0;
     cout << ptr[0].pId ;
-    cout << "is working from " << 0 << "to"<< processes[0].CPU_time;
+    cout << "is working from " << 0 << "to"<< ptr[0].CPU_time;
     for(int i=1;i<n;i++)
     {
         cout << ptr[i].pId;
