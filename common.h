@@ -23,7 +23,7 @@ struct Process {
 		ll ioCount = IOPercent * numberOfInstructions / 100;
 		for (int i = 0; i < ioCount; i++)
 			insType[i] = 1;
-		executionTime = numberOfInstructions - ioCount;
+		executionTime =numberOfInstructions - ioCount;
 		random_shuffle(insType.begin(), insType.end());
 	}
 	bool operator< (const Process& p) const {
@@ -40,6 +40,17 @@ struct SRTFcompare
             return p.readyTime > t.readyTime;
     }
 };
+struct SJFcompare
+{
+    bool operator() (const Process& p, const Process& t) const
+    {
+        if (p.executionTime == t.executionTime)
+            return p.readyTime > t.readyTime;
+        else
+            return p.executionTime > t.executionTime;
+    }
+};
+
 void print(ll st, ll en, ll pid, bool fin,bool io);
 struct processMetaData
 {
