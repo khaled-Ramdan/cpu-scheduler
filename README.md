@@ -5,11 +5,11 @@
 * makefile
 
 ## Program menu 
-  - first come first serve
-  - shortest jop first
-  - shortest time to complelion first
-  - go to round robin
-  - go to multi level feedback queue
+  - First come first serve => *`FCFS`*
+  - Shortest jop first => *`SJF`*
+  - Shortest Time To Complelion First => *`STCF`*
+  - Round robin => *`RR`*
+  - Multi Level Feedback Queue => *`MLFQ`*
 
 ## Data set
  Using external program, data-set is created with random values to be as the program input
