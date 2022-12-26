@@ -28,6 +28,16 @@ struct Process {
 		return p.readyTime < this->readyTime;
 	}
 };
+struct SRTFcompare
+{
+    bool operator() (const Process& p, const Process& t) const
+    {
+        if (p.readyTime == t.readyTime)
+            return p.executionTime > t.executionTime;
+        else
+            return p.readyTime > t.readyTime;
+    }
+};
 void print(ll st, ll en, ll pid, bool fin,bool io);
 struct processMetaData
 {
