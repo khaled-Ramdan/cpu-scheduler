@@ -28,7 +28,7 @@ void FCFS_Scheduler(Process *ptr, int n , int m,int k);
 void FCFS_sortProcesses(Process *ptr, int n);
 double calcTurnaroundTime(Process *ptr, int n,int waiting_time, int ins_time);
 double calcResponceTime(Process *ptr, int n,int waiting_time);
-
+void printresult(Process *ptr, int n,int waiting_time ,int ins_time);
 
 
 int main() {
@@ -111,6 +111,7 @@ void FCFS_Scheduler(Process *ptr, int n , int m ,int k){
         cout <<"turn around time "<< ptr[i].turnaround_time;
         cout <<"responce time "<< ptr[i].responce_time;
     }
+    printresult(ptr, n,m ,k);
     
     cout << "Average turn around time \n"<< avrg_turn ;
     cout << "Average responce time \n"<< avrg_res ;
@@ -118,5 +119,18 @@ void FCFS_Scheduler(Process *ptr, int n , int m ,int k){
 }
 
 
+void printresult(Process *ptr, int n,int waiting_time ,int ins_time)
+{   
+    CPU_time = n*ins_time;
+    ptr[0].waiting_time=0;
+    cout << ptr[0].pId ;
+    cout << "is working from " << 0 << "to"<< processes[0].CPU_time;
+    for(int i=1;i<n;i++)
+    {
+        cout << ptr[i].pId;
+        ptr[i].waiting_time=ptr[i-1].CPU_time + ptr[i-1].waiting_time;
+        cout << "is working from " <<ptr[i].waiting_time<< "to"<< ptr[i].waiting_time+ptr[i].CPU_time;
+        
+    }
 
-
+}
