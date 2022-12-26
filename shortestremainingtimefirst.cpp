@@ -20,12 +20,12 @@ void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime, ll insTime)
             continue;
         }
         if (proc.pId != currentProc.first) {
-            print(currentProc.second, cTime, currentProc.first, procData[currentProc.first].completion != -1);
+            print(currentProc.second, cTime, currentProc.first, procData[currentProc.first].completion != -1,0);
             currentProc = make_pair(proc.pId, proc.readyTime);
         }
         if (proc.readyTime > cTime)
         {
-            print(cTime, proc.readyTime - 1, -1);
+            print(cTime, proc.readyTime - 1, -1,0,0);
             cTime = proc.readyTime;
         }
         if (procData[proc.pId].firstTun == -1)procData[proc.pId].firstTun = cTime;
@@ -43,13 +43,13 @@ void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime, ll insTime)
         proc.insIdx++;
         cTime += insTime;
         proc.readyTime = cTime + IOTime;
-        print(proc.readyTime - 1, cTime, proc.pId, proc.insIdx == proc.numberOfInstructions);
+        print(proc.readyTime - 1, cTime, proc.pId, proc.insIdx == proc.numberOfInstructions,0);
         if (proc.insIdx != proc.numberOfInstructions)
             app.push(proc);
         if (proc.insIdx == proc.numberOfInstructions)
             procData[proc.pId].completion = proc.readyTime;
     }
-    print(currentProc.second, cTime, currentProc.first, 1);
+    print(currentProc.second, cTime, currentProc.first, 1,0);
     cout << endl;
     metaDataDisplay(procData, v.size());
 
