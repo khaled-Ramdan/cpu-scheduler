@@ -29,11 +29,7 @@ void SJF(const vector<Process>& v, ll insTime, ll ioTime){
         APP.push(c);
         procData[i.pId].arrival = i.readyTime;
     }
-    if(v[0].readyTime)print(0,v[0].readyTime,-1,0,0);
-    q2.push(v[0]);
-    Process proc = APP.top();
-            APP.pop();
-    ll time=v[0].readyTime;
+    
     while (APP.size()||q2.size())
     {
         if(q2.size())
