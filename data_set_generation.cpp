@@ -62,7 +62,7 @@ string getPID(int x)
     return pid;
 }
 
-int main(char *argv[], int argc)
+int main()
 {
 
     fstream dataSet;
