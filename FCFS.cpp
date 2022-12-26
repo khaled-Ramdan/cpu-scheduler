@@ -24,7 +24,9 @@ void SJF(const vector<Process>& v, ll insTime, ll ioTime){
     
     for (auto& i : v)
     {
-        APP.push(i);
+        Process c=i;
+        c.executionTime=c.executionTime*insTime+(c.numberOfInstructions-c.executionTime)*ioTime;
+        APP.push(c);
         procData[i.pId].arrival = i.readyTime;
     }
     if(v[0].readyTime)print(0,v[0].readyTime,-1,0,0);
