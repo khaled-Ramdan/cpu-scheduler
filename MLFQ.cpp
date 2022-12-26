@@ -161,12 +161,13 @@ class MLFQ
             {
 
                 // cout << cur_process << ' ' << cur_time << ' ' << process[cur_process].insIdx << ' ' << process[cur_process].consumed << ' ' << timeSliceOfQueue[highestUsedLevel] << '\n';
-                 cout << cur_time << ' ' << blocked.size() << '\n';
+                 cout << highestUsedLevel << ' ' << cur_process << ' ' << cur_time << ' ' << blocked.size() << '\n';
                 if (isCompleteTimeSlice(process[cur_process].consumed, timeSliceOfQueue[highestUsedLevel]))
                 {
                     process[cur_process].consumed = 0;
                     int nextLevel = max(0, highestUsedLevel - 1);
                     priorityLevelRunning[nextLevel].push(cur_process);
+                    usedLevels.insert(nextLevel);
                     break;
                 }
 
