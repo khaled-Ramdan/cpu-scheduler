@@ -111,10 +111,12 @@ void FCFS_Scheduler(Process *ptr, int n , int m ,int k){
         cout <<"turn around time "<< ptr[i].turnaround_time;
         cout <<"responce time "<< ptr[i].responce_time;
     }
-    printresult(ptr, n,m ,k);
+    
     
     cout << "Average turn around time \n"<< avrg_turn ;
     cout << "Average responce time \n"<< avrg_res ;
+	
+	printresult(ptr, n,m ,k);
     
 }
 
