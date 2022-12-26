@@ -56,6 +56,7 @@ int main() {
 		
         // push this process in process vector
 		v[i]=Process(PID,number_of_instructions,io_percent,arrival_time);
+		v[i].executionTime*=io_waiting_time;
     }
 
     // close the data set file
@@ -89,7 +90,7 @@ int main() {
 			FCFS_Scheduler(v,instruction_execution_time,io_waiting_time);
 			break;
 		case '2':
-			// SJF_Scheduler(v,k,m);
+			SJF(v,instruction_execution_time,io_waiting_time);
 			break;
 		case '3':
 			shortestRemainingTimeFirst(v, io_waiting_time, instruction_execution_time);
