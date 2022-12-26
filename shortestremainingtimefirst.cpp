@@ -1,7 +1,7 @@
 #include"STCF.h"
-void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime,ll ITIME)
+void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime, ll insTime)
 {
-    priority_queue<Process>app;
+    priority_queue<Process, vector<Process>, SRTFcompare>app;
     map<ll, processMetaData>procData;
     for (Process& i : v)
     {
@@ -20,19 +20,19 @@ void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime,ll ITIME)
             continue;
         }
         if (proc.pId != currentProc.first) {
-            print(currentProc.second, cTime, currentProc.first, procData[currentProc.first].completion != -1,0);
+            print(currentProc.second, cTime, currentProc.first, procData[currentProc.first].completion != -1);
             currentProc = make_pair(proc.pId, proc.readyTime);
         }
         if (proc.readyTime > cTime)
         {
-            print(cTime, proc.readyTime - 1,  -1,0,0);
+            print(cTime, proc.readyTime - 1, -1);
             cTime = proc.readyTime;
         }
         if (procData[proc.pId].firstTun == -1)procData[proc.pId].firstTun = cTime;
         if (proc.insType[proc.insIdx] == 0)
         {
             proc.insIdx++;
-            cTime++;
+            cTime += insTime;
             proc.readyTime = cTime;
             if (proc.insIdx != proc.numberOfInstructions)
                 app.push(proc);
@@ -41,17 +41,17 @@ void shortestRemainingTimeFirst(vector<Process>& v, ll IOTime,ll ITIME)
             continue;
         }
         proc.insIdx++;
-        cTime++;
+        cTime += insTime;
         proc.readyTime = cTime + IOTime;
+        print(proc.readyTime - 1, cTime, proc.pId, proc.insIdx == proc.numberOfInstructions);
         if (proc.insIdx != proc.numberOfInstructions)
             app.push(proc);
         if (proc.insIdx == proc.numberOfInstructions)
             procData[proc.pId].completion = proc.readyTime;
     }
-    print(currentProc.second, cTime, currentProc.first, 1,0);
+    print(currentProc.second, cTime, currentProc.first, 1);
+    cout << endl;
     metaDataDisplay(procData, v.size());
 
 }
-
-
 
