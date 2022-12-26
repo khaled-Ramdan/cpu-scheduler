@@ -24,13 +24,16 @@ struct Process {
 		return p.readyTime < this->readyTime;
 	}
 };
-void print(ll st, ll en, ll pid, bool fin = 0) {
+void print(ll st, ll en, ll pid, bool fin = 0, bool io = 0) {
 	if (~pid)
 		cout << "process with id " << pid << " from " << st << " to " << en << "\n";
 	else
 		cout << "free cpu from " << st << " " << en << "\n";
+	if (io)
+		cout << "Process left cpu for IO purpose.......\n";
 	if (fin)
 		cout << "Process is treminated....\n";
+
 }
 struct processMetaData
 {
@@ -82,7 +85,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 			curProcess.readyTime = curTime + ioTime;
 			curProcess.insIdx++;
 			ok = 1;
-			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
+			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions, 1);
 			if (curProcess.insIdx != curProcess.numberOfInstructions)
 				scheduler.push(curProcess);
 			curTime++;
@@ -91,7 +94,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 		en = curTime;
 		if (curProcess.insIdx == curProcess.numberOfInstructions)
 			procData[curProcess.pId].completion = curProcess.readyTime;
-		if(!ok)
+		if (!ok)
 			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
 	}
 	metaDataDisplay(procData, v.size());
