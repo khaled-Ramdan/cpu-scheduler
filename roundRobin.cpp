@@ -23,6 +23,7 @@ void metaDataDisplay(map<ll, processMetaData>procData, ll numberOfProcesses) {
 		<< "Average Response Time = " << totalResponse / numberOfProcesses << "\n";
 }
 void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
+	if(v.empty())return cout<< "There are no processes",void();
 	priority_queue<Process>scheduler;
 	map<ll, processMetaData>procData;
 	for (auto& i : v) {
@@ -40,7 +41,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 			curTime = curProcess.readyTime;
 		}
 		ll st = curTime, en = 0, ok = 0;
-		for (int i = 0; i < timeSlice and curProcess.insIdx < curProcess.numberOfInstructions; i++, curTime++, curProcess.insIdx++) {
+		for (int i = 0; i < timeSlice and curProcess.insIdx < curProcess.numberOfInstructions; i+=insTime, curTime+=insTime, curProcess.insIdx++) {
 			if (procData[curProcess.pId].firstTun == -1)procData[curProcess.pId].firstTun = curTime;
 			if (curProcess.insType[curProcess.insIdx] == 0) //cpu instruction
 				continue;
@@ -53,7 +54,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions,1);
 			if (curProcess.insIdx != curProcess.numberOfInstructions)
 				scheduler.push(curProcess);
-			curTime++;
+			curTime+= insTime;
 			break;
 		}
 		en = curTime;
