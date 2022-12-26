@@ -38,7 +38,7 @@ int main() {
 	Process *ptr ;
 	for (int i = 0; i < n; i++) {
 		
-		cin >> (*ptr).pId >> (*ptr).numberOfInstructions >> (*ptr).IOPercent >>(*ptr).readyTime;
+		cin >> ptr[i].pId >> ptr[i].numberOfInstructions >> ptr[i].IOPercent >>ptr[i].readyTime;
 		
 	}
 	
