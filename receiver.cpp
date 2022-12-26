@@ -6,7 +6,8 @@
 
 using namespace std;
 
-struct Process {
+struct Process 
+{
 
     // info for each Process
 	string PID;
@@ -14,8 +15,19 @@ struct Process {
     // instruction Type vector -> to know the type for the instruction where 0 => cpu and 1 => io
     vector<bool>insType; 
 
+    // Initalize info 
+	Process() 
+    { 
+        readyTime = 0;
+        PID = ""; 
+        numberOfInstructions = 0; 
+        IOPercent = 0; 
+        insIdx = 0; 
+    };
+
     // constructor of this struct
-	Process(string pid, int instructionCount, int iopercent, int arrivalTime) {
+	Process(string pid, int instructionCount, int iopercent, int arrivalTime)
+    {
 		PID = pid;
 		numberOfInstructions = instructionCount;
 		IOPercent = iopercent;
@@ -28,7 +40,8 @@ struct Process {
 	}
 
     // determine each instruction is cpu or io
-	void randomizeIO() {
+	void randomizeIO() 
+    {
         // get the number of io intructions depend on io percentage
         int ioCount = IOPercent * numberOfInstructions / 100;
 		// make the first ioCount in the instructions is io instruction
@@ -41,7 +54,8 @@ struct Process {
 	}
 
     // sort the processes according to its ready_time
-	bool operator< (const Process& p) const {
+	bool operator< (const Process& p) const 
+    {
 		return p.readyTime < this->readyTime;
 	}
 };
