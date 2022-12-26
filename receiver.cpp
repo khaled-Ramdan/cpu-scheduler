@@ -10,18 +10,19 @@ struct Process {
 
     // info for each Process
 	string PID;
-    int number_of_instructions, io_percent, ready_time;
+    int numberOfInstructions, IOPercent, readyTime, insIdx;
     // instruction Type vector -> to know the type for the instruction where 0 => cpu and 1 => io
-    vector<bool>instruction_type; 
+    vector<bool>insType; 
 
     // constructor of this struct
 	Process(string pid, int instructionCount, int iopercent, int arrivalTime) {
 		PID = pid;
-		number_of_instructions = instructionCount;
-		io_percent = iopercent;
-		ready_time = arrivalTime;
+		numberOfInstructions = instructionCount;
+		IOPercent = iopercent;
+		readyTime = arrivalTime;
+        insIdx = 0;
         // resize the instruction_type vector (instruction_type.size() = number_of_instructions) and assign each index by 0
-		instruction_type.assign(number_of_instructions, 0); 
+		insType.assign(numberOfInstructions, 0); 
 		// call randomizeIO function to determine which instruction is cpu or io
         randomizeIO();
 	}
@@ -29,19 +30,19 @@ struct Process {
     // determine each instruction is cpu or io
 	void randomizeIO() {
         // get the number of io intructions depend on io percentage
-        int ioCount = io_percent * number_of_instructions / 100;
+        int ioCount = IOPercent * numberOfInstructions / 100;
 		// make the first ioCount in the instructions is io instruction
         for (int i = 0; i < ioCount; i++)
 		{
-            instruction_type[i] = 1;    // means this instruction is io instruction
+            insType[i] = 1;    // means this instruction is io instruction
         }
         // shuffle all instructions randomly
-		random_shuffle(instruction_type.begin(), instruction_type.end());
+		random_shuffle(insType.begin(), insType.end());
 	}
 
     // sort the processes according to its ready_time
 	bool operator< (const Process& p) const {
-		return p.ready_time < this->ready_time;
+		return p.readyTime < this->readyTime;
 	}
 };
 
