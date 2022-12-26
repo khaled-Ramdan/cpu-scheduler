@@ -1,50 +1,15 @@
-#include<bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-struct Process {
-	ll readyTime, pId, numberOfInstructions, IOPercent, insIdx;
-	vector<bool>insType;//0=>cpu - 1=> io
-	Process() { readyTime = 0; pId = 0; numberOfInstructions = 0; IOPercent = 0; insIdx = 0; };
-	Process(ll id, ll instructionCount, ll iopercent, ll arrivalTime) {
-		pId = id;
-		numberOfInstructions = instructionCount;
-		IOPercent = iopercent;
-		readyTime = arrivalTime;
-		insIdx = 0;
-		insType.assign(numberOfInstructions, 0);
-		randomizeIO();
-	}
-	void randomizeIO() {
-		ll ioCount = IOPercent * numberOfInstructions / 100;
-		for (int i = 0; i < ioCount; i++)
-			insType[i] = 1;
-		random_shuffle(insType.begin(), insType.end());
-	}
-	bool operator< (const Process& p) const {
-		return p.readyTime < this->readyTime;
-	}
-};
-void print(ll st, ll en, ll pid, bool fin = 0, bool io = 0) {
+#include"common.h"
+
+void print(ll st, ll en, ll pid, bool fin = 0,bool io=0) {
 	if (~pid)
 		cout << "process with id " << pid << " from " << st << " to " << en << "\n";
 	else
 		cout << "free cpu from " << st << " " << en << "\n";
 	if (io)
-		cout << "Process left cpu for IO purpose.......\n";
+	cout << "Process left cpu for IO purpose.......\n";
 	if (fin)
 		cout << "Process is treminated....\n";
-
 }
-struct processMetaData
-{
-	ll  arrival = -1, completion = -1, firstTun = -1;
-	ll responseTime() {
-		return firstTun - arrival;
-	}
-	ll turnAroundTime() {
-		return completion - arrival;
-	}
-};
 void metaDataDisplay(map<ll, processMetaData>procData, ll numberOfProcesses) {
 	ll totalTurnAround = 0, totalResponse = 0;
 	for (auto& i : procData) {
@@ -85,7 +50,7 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 			curProcess.readyTime = curTime + ioTime;
 			curProcess.insIdx++;
 			ok = 1;
-			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions, 1);
+			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions,1);
 			if (curProcess.insIdx != curProcess.numberOfInstructions)
 				scheduler.push(curProcess);
 			curTime++;
@@ -94,24 +59,12 @@ void RoundRobin(const vector<Process>& v, ll timeSlice, ll insTime, ll ioTime) {
 		en = curTime;
 		if (curProcess.insIdx == curProcess.numberOfInstructions)
 			procData[curProcess.pId].completion = curProcess.readyTime;
-		if (!ok)
+		if(!ok)
 			print(st, en, curProcess.pId, curProcess.insIdx == curProcess.numberOfInstructions);
 	}
 	metaDataDisplay(procData, v.size());
 }
-int main() {
-	srand(time(0));
-	int n, m, k, tc = 200;
-	cin >> n >> m >> k;
-	vector<Process>v(n);
-	for (int i = 0; i < n; i++) {
-		int a, b, c, d;
-		cin >> a >> b >> c >> d;
-		v[i] = Process(a, b, c, d);
-	}
-	RoundRobin(v, tc, k, m);
-	return 0;
-}
+
 
 
 
@@ -120,7 +73,6 @@ int main() {
 
 
 /*
-
 
 10 100 1
 0 84 77 81
