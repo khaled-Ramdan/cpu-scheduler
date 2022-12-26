@@ -1,6 +1,6 @@
 libcommon=libcommon.a
 libFCFS=libFCFS.a
-# hstruct=struct.h
+libMLFQ=libMLFQ.a
 # cread=read_proc.c
 # hread=read_proc.h
 libSTCF=libSTCF.a
@@ -11,21 +11,23 @@ cSTCF=shortestremainingtimefirst.cpp
 hSTCF=STCF.h
 hFCFS=FCFS.h
 cFCFS=FCFS.cpp
+cMLFQ=MLFQ.cpp
 CC=g++
 CFLAG= -c -o
 
 
-all: cround  cSTCF cFCFS
+all: cround  cSTCF cFCFS cMLFQ
 
 
 cround:hcommon
 	$(CC) $(cround) $(CFLAG) $(libcommon)
-
+cMLFQ:cround
+	$(CC) $(cMLFQ) $(CFLAG) $(libMLFQ)
 hcommon:
 	$(CC) $(hcommon)
 
 main: all
-	$(CC) main.cpp -L. -lcommon -lSTCF -lFCFS -o main
+	$(CC) main.cpp -L. -lcommon -lSTCF -lFCFS -lMLFQ -o main
 
 hSTCF:cround
 	$(CC) $(hSTCF) 
