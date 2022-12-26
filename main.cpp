@@ -13,14 +13,64 @@ void menu()
 }
 int main() {
 	srand(time(0));
-	int n, m, k, tc = 200;
-	cin >> n >> m >> k;
-	vector<Process>v(n);
-	for (int i = 0; i < n; i++) {
-		int a, b, c, d;
-		cin >> a >> b >> c >> d;
-		v[i] = Process(a, b, c, d);
-	}
+	fstream dataSet;
+        int number_of_processes,io_waiting_time ,instruction_execution_time;
+    // open the 'Data_set.txt' File 
+    dataSet.open("Data_Set.txt", ios::in);   
+    // if file Opening failed    
+    if(!dataSet)
+    {
+        cout << "File Opening failed"; 
+        return 0;
+    } 
+    // if reaches here the file is opened
+    // get the number of processes
+    dataSet >> number_of_processes;
+
+    // get the IO waiting time
+    dataSet >> io_waiting_time;
+
+    // get the instruction execution time
+    dataSet >> instruction_execution_time;
+    
+    // vector to store all processes
+    vector<Process>v(number_of_processes);
+
+    // loop to get info for each process
+    for (int i = 0; i < number_of_processes; i++)
+    {
+        int PID;
+        int number_of_instructions, io_percent, arrival_time;
+
+        // get the pid for this instruction
+        dataSet >> PID;
+
+        // get the instruction count for this process
+        dataSet >> number_of_instructions;
+
+        // get the IO percentage for this process
+        dataSet >> io_percent;
+
+        // get the arrival time for this process
+        dataSet >> arrival_time;
+		
+        // push this process in process vector
+		v[i]=Process(PID,number_of_instructions,io_percent,arrival_time);
+    }
+
+    // close the data set file
+    dataSet.close();
+
+	int tc;
+    // if it reaches here data set is uploaded
+	// int n, m, k, tc = 200;
+	// cin >> n >> m >> k;
+	// vector<Process>v(n);
+	// for (int i = 0; i < n; i++) {
+	// 	int a, b, c, d;
+	// 	cin >> a >> b >> c >> d;
+	// 	v[i] = Process(a, b, c, d);
+	// }
 	bool on=1;
 	while(on)
 	{
@@ -36,16 +86,18 @@ int main() {
 		switch (z)
 		{
 		case '1':
-			FCFS_Scheduler(v,k,m);
+			FCFS_Scheduler(v,instruction_execution_time,io_waiting_time);
 			break;
 		case '2':
 			// SJF_Scheduler(v,k,m);
 			break;
 		case '3':
-			shortestRemainingTimeFirst(v, m, k);
+			shortestRemainingTimeFirst(v, io_waiting_time, instruction_execution_time);
 			break;
 		case '4':
-			RoundRobin(v, tc, k, m);
+			cout<<"enter slice time:";
+			cin>>tc;
+			RoundRobin(v, tc, instruction_execution_time, io_waiting_time);
 			break;
 		case '5':
 			// MLFQ(v,k,m);
