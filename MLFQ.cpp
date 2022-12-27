@@ -83,12 +83,18 @@ class MLFQ
         void scheduler()                            // To run The Processes
         {
 
+            cout << "\n\n************ START ************\n\n";
+
+            int lastTime = 0;
+
             while (isNotAllFinish())                // while The processes is not finished The Scheduling still running
             {            
 
                 // for every period Time(priority_boost) The Processes boosted to the top most level
                 if (cur_time % priority_boost == 0 && cur_time)
                 {
+                    cout << "\n" << cur_time << ": \n";
+                    cout << "************ All Processes are Boosted ************\n\n";
                     boost();
                 }
 
@@ -101,9 +107,15 @@ class MLFQ
                     continue;
                 }
 
+                if (cur_time - lastTime > 0)
+                {
+                    cout << "\n\n************ CPU is Free from " << lastTime << " to " << cur_time - 1 << " ************\n\n";
+                }
+
                 int highestUsedLevel = *usedLevels.begin();     // get The Highest Used Level
                 int cur_process      = priorityLevelRunning[highestUsedLevel].front();
                 bool flag            = 0;                       // if still 0 that meaning the process is not blocked otherwise the process is blocked
+                int st               = cur_time;
             
                 //  loop until the process is finished or blocked or it uses up the allotment time slice
                 while (process[cur_process].insIdx < process[cur_process].numberOfInstructions)
@@ -116,13 +128,39 @@ class MLFQ
                         int nextLevel = max(0, highestUsedLevel - 1);      // get the next level and if the current level is 0 stay in the same level
                         priorityLevelRunning[nextLevel].push(cur_process);
                         usedLevels.insert(nextLevel);
+                        
+                        cout << "*********\n\n";
+                        // cout << "\n" << cur_time << ": \n";
+                        if (cur_time != st)
+                        {
+                            cout << "Process " << process[cur_process].pId << " Used CPU from " << st << " to " << cur_time - 1 << "\n";
+                        }
+
+                        // cout << "\n" << cur_time << ": \n";
+                        cout << "Process " << process[cur_process].pId << " used up the Time Slice of The level num " << highestUsedLevel <<
+                                " and ";
+                        if (nextLevel != highestUsedLevel)cout << "moves down to The Next Level num " << nextLevel << '\n';
+                        else cout << "still at Level 0\n";
+                        cout << "Process " << process[cur_process].pId << " Left The CPU...\n\n";
+                        cout << "\n*********\n";
+
                         break;
                     }
 
                     if (process[cur_process].insType[process[cur_process].insIdx])
                     {
                         // if the process is blocked => io instruction
+
+                        cout << "*********\n\n";
+                        // cout << "\n" << cur_time << ": \n";
+                        if (cur_time != st)
+                        {
+                            cout << "\nProcess " << process[cur_process].pId << " Used CPU from " << st << " to " << cur_time - 1 << "\n";
+                        }
+
                         block_process(highestUsedLevel, cur_process, cur_time);
+                        cout << "\n*********\n";
+
                         process[cur_process].consumed--;
                         flag = 1;
                     }
@@ -142,19 +180,23 @@ class MLFQ
                     usedLevels.erase(usedLevels.begin());
                 }
 
-                cout << highestUsedLevel << ' ' << timeSliceOfQueue[highestUsedLevel] << '\n';
-                if (flag == 1)
-                {
-                    cout << process[cur_process].pId << " is Blocked at Current Time = " << cur_time << endl; 
-                }
+                
+                if (flag == 1);
                 else if (process[cur_process].insIdx == process[cur_process].numberOfInstructions)
                 {
-                    cout << process[cur_process].pId << " is Finished at Current Time = " << cur_time << endl; 
+                    cout << "*********\n\n";
+                    // cout << "\n" << cur_time << ": \n";
+                    if (cur_time != st)
+                    {
+                        cout << "Process " << process[cur_process].pId << " Used CPU from " << st << " to " << cur_time - 1 << "\n";
+                    }
+
+                    // cout << "\n" << cur_time << ": \n";
+                    cout << "Process " << process[cur_process].pId << " is Terminated....\n"; 
+                    cout << "\n*********\n";
                 }
-                else 
-                {
-                    cout << process[cur_process].pId << " uses up the Time Slice Current Time = " << cur_time << endl; 
-                }
+
+                lastTime = cur_time;
             }
 
         }
@@ -170,6 +212,9 @@ class MLFQ
         {
             process[id].readyTime = cur_time + io_waiting_time;
             blocked.push({process[id].readyTime, {level, id}});
+
+            // cout << cur_time << ": \n";
+            cout << "Process " << process[id].pId << " is Blocked due to IO request....\n";
         }
 
         void fromReadyToRunning()                 // append The Ready and New Processes in Their Levels
@@ -206,6 +251,11 @@ class MLFQ
             }
             priorityLevelRunning[cur_level].push(ready_process.second);
             usedLevels.insert(cur_level);
+
+            // cout << '\n' << cur_time << ": \n";
+            cout << "Process " << process[ready_process.second].pId << " turned into Ready Process\n";
+            cout << "Process " << process[ready_process.second].pId << " pushed to the Priority Level num: " << cur_level << "\n\n";
+
             return;
         }
 
@@ -214,6 +264,11 @@ class MLFQ
             // append the new Process in The top Level
             priorityLevelRunning[topLevel].push(pointer++);
             usedLevels.insert(topLevel);
+
+            // cout << '\n' << cur_time << ": \n";
+            cout << "Process " << process[pointer - 1].pId << " enterd to a System\n";
+            cout << "Process " << process[pointer - 1].pId << " pushed to the Priority Level num: 0" << "\n\n";
+
             return;
         }
 
@@ -256,21 +311,19 @@ void MLFQS(const vector<Process>& v,int n,int m,int k)
     number_of_processes = n;
     io_waiting_time = m;
     instruction_execution_time = k;
-    // if it reaches here data set is uploaded
 
-    cout << process.size() << '\n';
-    for (int i = 0; i < number_of_processes; i++)
-    {
-        cout << "process num " << i << "   " << process[i].readyTime << ":\t";
-        for (int j = 0; j < process[i].numberOfInstructions; j++)
-        {
-            cout << process[i].insType[j] << ' ';
-        }
-        cout << "\n\n";
-    }
+    // cout << process.size() << '\n';
+    // for (int i = 0; i < number_of_processes; i++)
+    // {
+    //     cout << "process num " << i << "   " << process[i].readyTime << ":\t";
+    //     for (int j = 0; j < process[i].numberOfInstructions; j++)
+    //     {
+    //         cout << process[i].insType[j] << ' ';
+    //     }
+    //     cout << "\n\n";
+    // }
 
     MLFQ mlfq;
     mlfq.scheduler();
-
 
 }
